@@ -14,8 +14,8 @@ use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Configuration\ConfigResolv
 use eZ\Publish\API\Repository\Exceptions\ForbiddenException;
 use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
 use eZ\Publish\API\Repository\Repository;
-use Sensio\Bundle\GeneratorBundle\Command\Helper\QuestionHelper;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
@@ -72,7 +72,7 @@ class GenerateCommand extends ContainerAwareCommand
         $contentTypeGroupService->setAdminID($adminID);
         try {
             $contentTypeGroupService->add($contentTypeGroupName);
-            $output->writeln( "<info>Content type group created '$contentTypeGroupName'");
+            $output->writeln( "<info>Content type group created '$contentTypeGroupName'<info>");
         } catch( UnauthorizedException $e) {
             $output->writeln( "<error>" . $e->getMessage() . "</error>" );
         } catch (ForbiddenException $e ) {
