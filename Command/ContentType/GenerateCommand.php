@@ -72,12 +72,12 @@ class GenerateCommand extends ContainerAwareCommand
         $struct['contentTypeName'] = $this->getContentTypeName($questionHelper);
         $struct['contentTypeMainLanguage'] = $this->getContentTypeMainLanguage($contentLanguageService, $questionHelper);
         $struct['contentTypeNameSchema'] = $this->getContentTypeNameSchema($questionHelper);
-        $struct['attributes'] = array();
+        $struct['fields'] = array();
 
         while (true) {
-            $struct['attributes'][] = $this->getContentTypeAttribute($questionHelper, $struct['contentTypeMainLanguage']);
+            $struct['fields'][] = $this->getContentTypeField($questionHelper, $struct['contentTypeMainLanguage']);
             $question = new ConfirmationQuestion(
-                '<question>Do you want to add new attribute?</question> ',
+                '<question>Do you want to add new field?</question> ',
                 false
             );
 
@@ -194,29 +194,29 @@ class GenerateCommand extends ContainerAwareCommand
 
     protected function getContentTypeNameSchema(QuestionHelper $questionHelper)
     {
-        $question = new Question('Content type attribute identifier, used to define name schema: ');
+        $question = new Question('Content type field identifier, used to define name schema: ');
         $question->setValidator(
             array(
                 'EdgarEz\ToolsBundle\Command\ContentType\Validators',
-                'validateAttributeIdentifier'
+                'validateFieldIdentifier'
             )
         );
 
-        $attributeIdentifier = false;
-        while(!$attributeIdentifier) {
-            $attributeIdentifier = $questionHelper->ask($this->input, $this->output, $question);
+        $fieldIdentifier = false;
+        while(!$fieldIdentifier) {
+            $fieldIdentifier = $questionHelper->ask($this->input, $this->output, $question);
 
-            if (!$attributeIdentifier || empty($attributeIdentifier)) {
-                $this->output->writeln("<error>Attribute identifier is not valid</error>");
+            if (!$fieldIdentifier || empty($fieldIdentifier)) {
+                $this->output->writeln("<error>Field identifier is not valid</error>");
             }
         }
 
-        return $attributeIdentifier;
+        return $fieldIdentifier;
     }
 
-    protected function getContentTypeAttribute(QuestionHelper $questionHelper, $mainLanguage)
+    protected function getContentTypeField(QuestionHelper $questionHelper, $mainLanguage)
     {
-        $attribute = array(
+        $field = array(
             'identifier' => null,
             'type' => null,
             'name' => null,
@@ -226,54 +226,54 @@ class GenerateCommand extends ContainerAwareCommand
             'isSearchable' => true
         );
 
-        $question = new Question('New Attribute identifier: ');
+        $question = new Question('New field identifier: ');
         $question->setValidator(
             array(
                 'EdgarEz\ToolsBundle\Command\ContentType\Validators',
-                'validateAttributeIdentifier'
+                'validateFieldIdentifier'
             )
         );
 
-        $attributeIdentifier = false;
-        while (!$attributeIdentifier) {
-            $attributeIdentifier = $questionHelper->ask($this->input, $this->output, $question);
+        $fieldIdentifier = false;
+        while (!$fieldIdentifier) {
+            $fieldIdentifier = $questionHelper->ask($this->input, $this->output, $question);
 
-            if (!$attributeIdentifier || empty($attributeIdentifier)) {
-                $this->output->writeln("<error>Attribute identifier is not valid</error>");
+            if (!$fieldIdentifier || empty($fieldIdentifier)) {
+                $this->output->writeln("<error>Field identifier is not valid</error>");
             }
         }
-        $attribute['identifier'] = $attributeIdentifier;
+        $field['identifier'] = $fieldIdentifier;
 
-        $question = new Question('Attribute type: ');
+        $question = new Question('Field type: ');
 
-        $attributeType = false;
-        while(!$attributeType) {
-            $attributeType = $questionHelper->ask($this->input, $this->output, $question);
+        $fieldType = false;
+        while(!$fieldType) {
+            $fieldType = $questionHelper->ask($this->input, $this->output, $question);
 
-            if (!$attributeType || empty($attributeType)) {
-                $this->output->writeln("<error>Attribute type is not valid</error>");
+            if (!$fieldType || empty($fieldType)) {
+                $this->output->writeln("<error>Field type is not valid</error>");
             }
         }
-        $attribute['type'] = $attributeType;
+        $field['type'] = $fieldType;
 
-        $question = new Question('Attribute name: ');
+        $question = new Question('Field name: ');
         $question->setValidator(
             array(
                 'EdgarEz\ToolsBundle\Command\ContentType\Validators',
-                'validateAttributeName'
+                'validateFieldName'
             )
         );
 
-        $attributeName = false;
-        while(!$attributeName) {
-            $attributeName = $questionHelper->ask($this->input, $this->output, $question);
+        $fieldName = false;
+        while(!$fieldName) {
+            $fieldName = $questionHelper->ask($this->input, $this->output, $question);
 
-            if (!$attributeName || empty($attributeName)) {
-                $this->output->writeln("<error>Attribute name is not valid</error>");
+            if (!$fieldName || empty($fieldName)) {
+                $this->output->writeln("<error>Field name is not valid</error>");
             }
         }
-        $attribute['name'] = $attributeName;
+        $field['name'] = $fieldName;
 
-        return $attribute;
+        return $field;
     }
 }

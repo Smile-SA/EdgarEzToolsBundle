@@ -27,19 +27,19 @@ class Validators
         return $contentTypeIdentifier;
     }
 
-    public static function validateAttributeIdentifier($attributeIdentifier)
+    public static function validateFieldIdentifier($fieldIdentifier)
     {
-        if (preg_match('/[^a-z_]/', $attributeIdentifier))
+        if (preg_match('/[^a-z_]/', $fieldIdentifier))
             return false;
 
-        return $attributeIdentifier;
+        return $fieldIdentifier;
     }
 
-    public static function validateAttributeName($attributeName)
+    public static function validateFieldName($fieldName)
     {
-        if (preg_match('/[^ a-z0-9]/i', $attributeName))
+        if (preg_match('/[^ a-z0-9]/i', $fieldName))
             return false;
 
-        return $attributeName;
+        return $fieldName;
     }
 }
