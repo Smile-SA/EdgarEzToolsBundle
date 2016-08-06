@@ -59,7 +59,7 @@ class ContentType
         }
 
         $contentTypeDraft = $contentTypeService->createContentType($contentTypeCreateStruct, array($struct['contentTypeGroup']) );
-        $contentTypeService->publishContentTypeDraft($contentTypeDraft);
+        return $contentTypeService->publishContentTypeDraft($contentTypeDraft);
     }
 
     private function addField(ContentTypeService $contentTypeService, array $field, $pos = 10)

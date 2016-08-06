@@ -58,6 +58,6 @@ class Content
 
         $locationCreateStruct = $locationService->newLocationCreateStruct($struct['parentLocationID']);
         $draft = $contentService->createContent($contentCreateStruct, array($locationCreateStruct));
-        $contentService->publishVersion($draft->versionInfo);
+        return $contentService->publishVersion($draft->versionInfo);
     }
 }
