@@ -2,6 +2,7 @@ parameters:
     edgar_ez_tools.contenttypegroup.service.class: EdgarEz\ToolsBundle\Service\ContentTypeGroup
     edgar_ez_tools.contenttype.service.class: EdgarEz\ToolsBundle\Service\ContentType
     edgar_ez_tools.content.service.class: EdgarEz\ToolsBundle\Service\Content
+    edgar_ez_tools.role.service.class: EdgarEz\ToolsBundle\Service\Role
 
 services:
     edgar_ez_tools.contenttypegroup.service:
@@ -18,6 +19,12 @@ services:
 
     edgar_ez_tools.content.service:
         class: %edgar_ez_tools.content.service.class%
+        arguments: [@ezpublish.api.repository]
+        calls:
+            - [setAdminID, [$adminid;edgar_ez_tools$]]
+
+    edgar_ez_tools.role.service:
+        class: %edgar_ez_tools.role.service.class%
         arguments: [@ezpublish.api.repository]
         calls:
             - [setAdminID, [$adminid;edgar_ez_tools$]]
