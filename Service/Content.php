@@ -60,4 +60,39 @@ class Content
         $draft = $contentService->createContent($contentCreateStruct, array($locationCreateStruct));
         return $contentService->publishVersion($draft->versionInfo);
     }
+
+    /**
+     * Copy content subtree
+     *
+     * @param int $fromLocationID location ID source
+     * @param int $toLocationID location ID dest
+     * @param bool|string $name
+     * @return int new root Location ID subtree
+     */
+    public function copySubtree($fromLocationID, $toLocationID, $name = false)
+    {
+        $this->repository->setCurrentUser($this->repository->getUserService()->loadUser($this->adminID));
+
+        /** @var $locationService LocationService */
+        $locationService = $this->repository->getLocationService();
+        /** @var ContentService $contentService */
+        $contentService = $this->repository->getContentService();
+
+        $fromLocation = $locationService->loadLocation($fromLocationID);
+        $toLocation = $locationService->loadLocation($toLocationID);
+
+        $newLocation = $locationService->copySubtree($fromLocation, $toLocation);
+
+        if ($name) {
+            $contentInfo = $newLocation->getContentInfo();
+            $contentDraft = $contentService->createContentDraft($contentInfo);
+            $contentUpdateStruct = $contentService->newContentUpdateStruct();
+            $contentUpdateStruct->initialLanguageCode = $contentInfo->mainLanguageCode;
+            $contentUpdateStruct->setField('title', $name);
+            $contentDraft = $contentService->updateContent($contentDraft->versionInfo, $contentUpdateStruct);
+            $contentService->publishVersion($contentDraft->versionInfo);
+        }
+
+        return $newLocation->getContentInfo()->mainLocationId;
+    }
 }
