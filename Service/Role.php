@@ -33,6 +33,10 @@ class Role
         $this->repository = $repository;
     }
 
+    /**
+     * @param $roleName
+     * @return \eZ\Publish\API\Repository\Values\User\Role
+     */
     public function add($roleName)
     {
         $this->repository->setCurrentUser($this->repository->getUserService()->loadUser($this->adminID));
@@ -43,6 +47,7 @@ class Role
         $roleStruct = $roleService->newRoleCreateStruct($roleName);
         $roleDraft = $roleService->createRole($roleStruct);
         $roleService->publishRoleDraft($roleDraft);
+        return $roleService->loadRole($roleDraft->id);
     }
 
     public function addPolicy($roleID, $module, $function)
@@ -53,15 +58,26 @@ class Role
         $roleService = $this->repository->getRoleService();
 
         $policyStruct = $roleService->newPolicyCreateStruct($module, $function);
+        $role = $roleService->loadRole($roleID);
+        $roleDraft = $roleService->createRoleDraft($role);
         $roleDraft = $roleService->addPolicyByRoleDraft(
-            $roleService->loadRoleDraftByRoleId($roleID),
+            $roleDraft,
             $policyStruct
         );
 
         $roleService->publishRoleDraft($roleDraft);
+        return $roleDraft->id;
     }
 
-    public function addLimitation($policyID, $roleID, Limitation $limitation)
+    public function addLimitation($roleID, Limitation $limitation)
+    {
+        $this->repository->setCurrentUser($this->repository->getUserService()->loadUser($this->adminID));
+
+        /** @var RoleService $roleService */
+        $roleService = $this->repository->getRoleService();
+    }
+
+    public function addPolicyLimitation($policyID, $roleID, Limitation $limitation)
     {
         $this->repository->setCurrentUser($this->repository->getUserService()->loadUser($this->adminID));
 
