@@ -9,22 +9,22 @@ services:
         class: %edgar_ez_tools.contenttypegroup.service.class%
         arguments: [@ezpublish.api.repository]
         calls:
-            - [setAdminID, [$adminid;edgar_ez_tools$]]
+            - [setAdminID, [%edgar_ez_tools.adminid%]]
 
     edgar_ez_tools.contenttype.service:
         class: %edgar_ez_tools.contenttype.service.class%
         arguments: [@ezpublish.api.repository]
         calls:
-            - [setAdminID, [$adminid;edgar_ez_tools$]]
+            - [setAdminID, [%edgar_ez_tools.adminid%]]
 
     edgar_ez_tools.content.service:
         class: %edgar_ez_tools.content.service.class%
         arguments: [@ezpublish.api.repository]
         calls:
-            - [setAdminID, [$adminid;edgar_ez_tools$]]
+            - [setAdminID, [%edgar_ez_tools.adminid%]]
 
     edgar_ez_tools.role.service:
         class: %edgar_ez_tools.role.service.class%
         arguments: [@ezpublish.api.repository]
         calls:
-            - [setAdminID, [$adminid;edgar_ez_tools$]]
+            - [setAdminID, [%edgar_ez_tools.adminid%]]

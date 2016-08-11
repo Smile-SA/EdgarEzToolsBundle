@@ -90,7 +90,7 @@ class GenerateCommand extends ContainerAwareCommand
 
         /** @var $configResolver ConfigResolver */
         $configResolver = $this->getContainer()->get('ezpublish.config.resolver');
-        $adminID = $configResolver->getParameter('adminid', 'edgar_ez_tools');
+        $adminID = $this->getContainer()->getParameter('edgar_ez_tools.adminid');
 
         $edgarEzContentService = new Content($repository);
         $edgarEzContentService->setAdminID($adminID);
