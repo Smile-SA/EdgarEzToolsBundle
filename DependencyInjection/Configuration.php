@@ -22,7 +22,7 @@ class Configuration extends SiteAccessConfiguration
 
         $systemNode = $this->generateScopeBaseNode($rootNode);
         $systemNode
-            ->scalarNode('adminid')->isRequired()->end();
+            ->integerNode('adminid')->isRequired()->end();
 
         return $treeBuilder;
     }
