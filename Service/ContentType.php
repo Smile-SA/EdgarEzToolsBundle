@@ -44,7 +44,8 @@ class ContentType
 
         $contentTypeCreateStruct = $contentTypeService->newContentTypeCreateStruct($struct['contentTypeIdentifier']);
         $contentTypeCreateStruct->mainLanguageCode = $struct['contentTypeMainLanguage'];
-        $contentTypeCreateStruct->nameSchema = '<' . $struct['contentTypeNameSchema'] . '>';
+        $contentTypeCreateStruct->nameSchema = '<' . trim($struct['contentTypeNameSchema'], '<');
+        $contentTypeCreateStruct->nameSchema = trim($contentTypeCreateStruct->nameSchema, '>') . '>';
         $contentTypeCreateStruct->isContainer = (isset($struct['isContainer'])) ? $struct['isContainer'] : false;
         // set names for the content type
         $contentTypeCreateStruct->names = array(
