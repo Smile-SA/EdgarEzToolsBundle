@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: emdro
- * Date: 03/08/2016
- * Time: 13:23
- */
 
 namespace EdgarEz\ToolsBundle\Service;
-
 
 use eZ\Publish\API\Repository\ContentTypeService;
 use eZ\Publish\API\Repository\Repository;
