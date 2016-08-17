@@ -69,34 +69,7 @@ class Role
         return $roleDraft->id;
     }
 
-    public function addPolicyLimitation($policyID, $roleID, Limitation $limitation)
-    {
-        $this->repository->setCurrentUser($this->repository->getUserService()->loadUser($this->adminID));
-
-        /** @var RoleService $roleService */
-        $roleService = $this->repository->getRoleService();
-
-        $policy = new Policy(
-            array(
-                'id' => $policyID,
-                'roleId' => $roleID,
-            )
-        );
-
-        $policyUpdateStruct = new PolicyUpdateStruct();
-        $policyStruct = $policyUpdateStruct->addLimitation($limitation);
-        $policyDraft = new PolicyDraft(['innerPolicy' => $policy]);
-        $roleDraft = $roleService->loadRoleDraftByRoleId($roleID);
-
-        $roleService->updatePolicyByRoleDraft(
-            $roleDraft,
-            $policyDraft,
-            $policyStruct
-        );
-        $roleService->publishRoleDraft($roleDraft);
-    }
-
-    public function addModelsSiteaccessLimitation(\eZ\Publish\API\Repository\Values\User\Role $role, array $siteaccess)
+    public function addSiteaccessLimitation(\eZ\Publish\API\Repository\Values\User\Role $role, array $siteaccess)
     {
         $this->repository->setCurrentUser($this->repository->getUserService()->loadUser($this->adminID));
 
