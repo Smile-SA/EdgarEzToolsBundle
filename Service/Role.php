@@ -69,14 +69,6 @@ class Role
         return $roleDraft->id;
     }
 
-    public function addLimitation($roleID, Limitation $limitation)
-    {
-        $this->repository->setCurrentUser($this->repository->getUserService()->loadUser($this->adminID));
-
-        /** @var RoleService $roleService */
-        $roleService = $this->repository->getRoleService();
-    }
-
     public function addPolicyLimitation($policyID, $roleID, Limitation $limitation)
     {
         $this->repository->setCurrentUser($this->repository->getUserService()->loadUser($this->adminID));
@@ -102,5 +94,39 @@ class Role
             $policyStruct
         );
         $roleService->publishRoleDraft($roleDraft);
+    }
+
+    public function addModelsSiteaccessLimitation(\eZ\Publish\API\Repository\Values\User\Role $role, array $siteaccess)
+    {
+        $this->repository->setCurrentUser($this->repository->getUserService()->loadUser($this->adminID));
+
+        /** @var RoleService $roleService */
+        $roleService = $this->repository->getRoleService();
+
+        $roleDraft = $roleService->createRoleDraft($role);
+
+        /** @var Policy[] $policies */
+        $policies = $roleDraft->policies;
+        foreach ($policies as $policy) {
+            if ($policy->module == 'user' && $policy->function == 'login') {
+                $siteaccessLimitation = new Limitation\SiteAccessLimitation(
+                    array(
+                        'limitationValues' => $siteaccess
+                    )
+                );
+
+                $policyUpdateStruct = new PolicyUpdateStruct();
+                $policyUpdateStruct->addLimitation($siteaccessLimitation);
+                $policyDraft = new PolicyDraft(['innerPolicy' => new Policy(['id' => $policy->id, 'module' => 'user', 'function' => 'login', 'roleId' => $roleDraft->id])]);
+
+                $roleService->updatePolicyByRoleDraft(
+                    $roleDraft,
+                    $policyDraft,
+                    $policyUpdateStruct
+                );
+                $roleService->publishRoleDraft($roleDraft);
+                return;
+            }
+        }
     }
 }
