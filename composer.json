@@ -1,0 +1,19 @@
+{
+  "name": "edgarez/toolsbundle",
+  "description": "Tools Bundle",
+  "license": "GPL-2.0",
+  "authors": [
+    {
+      "name": "Emmanuel Drouet",
+      "homepage": "http://emmanuel-drouet.me"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.3.3",
+  },
+  "autoload": {
+    "psr-0": {"EdgarEz\\ToolsBundle": ""}
+  },
+  "target-dir": "EdgarEz/ToolsBundle"
+}
