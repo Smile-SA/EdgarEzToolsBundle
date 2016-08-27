@@ -2,6 +2,10 @@
 
 namespace EdgarEz\ToolsBundle\Service;
 
+use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
+use eZ\Publish\API\Repository\Exceptions\LimitationValidationException;
+use eZ\Publish\API\Repository\Exceptions\NotFoundException;
+use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
 use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\RoleService;
 use eZ\Publish\API\Repository\Values\User\Limitation;
@@ -44,10 +48,18 @@ class Role
         /** @var RoleService $roleService */
         $roleService = $this->repository->getRoleService();
 
-        $roleStruct = $roleService->newRoleCreateStruct($roleName);
-        $roleDraft = $roleService->createRole($roleStruct);
-        $roleService->publishRoleDraft($roleDraft);
-        return $roleService->loadRole($roleDraft->id);
+        try {
+            $roleStruct = $roleService->newRoleCreateStruct($roleName);
+            $roleDraft = $roleService->createRole($roleStruct);
+            $roleService->publishRoleDraft($roleDraft);
+            return $roleService->loadRole($roleDraft->id);
+        } catch (UnauthorizedException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (InvalidArgumentException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (LimitationValidationException $e) {
+            throw new \RuntimeException($e->getMessage());
+        }
     }
 
     public function addPolicy($roleID, $module, $function)
@@ -57,16 +69,26 @@ class Role
         /** @var RoleService $roleService */
         $roleService = $this->repository->getRoleService();
 
-        $policyStruct = $roleService->newPolicyCreateStruct($module, $function);
-        $role = $roleService->loadRole($roleID);
-        $roleDraft = $roleService->createRoleDraft($role);
-        $roleDraft = $roleService->addPolicyByRoleDraft(
-            $roleDraft,
-            $policyStruct
-        );
+        try {
+            $policyStruct = $roleService->newPolicyCreateStruct($module, $function);
+            $role = $roleService->loadRole($roleID);
+            $roleDraft = $roleService->createRoleDraft($role);
+            $roleDraft = $roleService->addPolicyByRoleDraft(
+                $roleDraft,
+                $policyStruct
+            );
 
-        $roleService->publishRoleDraft($roleDraft);
-        return $roleDraft->id;
+            $roleService->publishRoleDraft($roleDraft);
+            return $roleDraft->id;
+        } catch (UnauthorizedException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (NotFoundException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (InvalidArgumentException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (LimitationValidationException $e) {
+            throw new \RuntimeException($e->getMessage());
+        }
     }
 
     public function addSiteaccessLimitation(\eZ\Publish\API\Repository\Values\User\Role $role, array $siteaccess)
@@ -76,30 +98,38 @@ class Role
         /** @var RoleService $roleService */
         $roleService = $this->repository->getRoleService();
 
-        $roleDraft = $roleService->createRoleDraft($role);
+        try {
+            $roleDraft = $roleService->createRoleDraft($role);
 
-        /** @var Policy[] $policies */
-        $policies = $roleDraft->policies;
-        foreach ($policies as $policy) {
-            if ($policy->module == 'user' && $policy->function == 'login') {
-                $siteaccessLimitation = new Limitation\SiteAccessLimitation(
-                    array(
-                        'limitationValues' => $siteaccess
-                    )
-                );
+            /** @var Policy[] $policies */
+            $policies = $roleDraft->policies;
+            foreach ($policies as $policy) {
+                if ($policy->module == 'user' && $policy->function == 'login') {
+                    $siteaccessLimitation = new Limitation\SiteAccessLimitation(
+                        array(
+                            'limitationValues' => $siteaccess
+                        )
+                    );
 
-                $policyUpdateStruct = new PolicyUpdateStruct();
-                $policyUpdateStruct->addLimitation($siteaccessLimitation);
-                $policyDraft = new PolicyDraft(['innerPolicy' => new Policy(['id' => $policy->id, 'module' => 'user', 'function' => 'login', 'roleId' => $roleDraft->id])]);
+                    $policyUpdateStruct = new PolicyUpdateStruct();
+                    $policyUpdateStruct->addLimitation($siteaccessLimitation);
+                    $policyDraft = new PolicyDraft(['innerPolicy' => new Policy(['id' => $policy->id, 'module' => 'user', 'function' => 'login', 'roleId' => $roleDraft->id])]);
 
-                $roleService->updatePolicyByRoleDraft(
-                    $roleDraft,
-                    $policyDraft,
-                    $policyUpdateStruct
-                );
-                $roleService->publishRoleDraft($roleDraft);
-                return;
+                    $roleService->updatePolicyByRoleDraft(
+                        $roleDraft,
+                        $policyDraft,
+                        $policyUpdateStruct
+                    );
+                    $roleService->publishRoleDraft($roleDraft);
+                    return;
+                }
             }
+        } catch (UnauthorizedException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (InvalidArgumentException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (LimitationValidationException $e) {
+            throw new \RuntimeException($e->getMessage());
         }
     }
 }

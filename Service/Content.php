@@ -4,6 +4,12 @@ namespace EdgarEz\ToolsBundle\Service;
 
 use eZ\Publish\API\Repository\ContentService;
 use eZ\Publish\API\Repository\ContentTypeService;
+use eZ\Publish\API\Repository\Exceptions\BadStateException;
+use eZ\Publish\API\Repository\Exceptions\ContentFieldValidationException;
+use eZ\Publish\API\Repository\Exceptions\ContentValidationException;
+use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
+use eZ\Publish\API\Repository\Exceptions\NotFoundException;
+use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
 
@@ -42,16 +48,30 @@ class Content
         /** @var $locationService LocationService */
         $locationService = $this->repository->getLocationService();
 
-        $contentType = $contentTypeService->loadContentTypeByIdentifier($struct['contentTypeIdentifier']);
-        $contentCreateStruct = $contentService->newContentCreateStruct($contentType, $struct['languageCode']);
+        try {
+            $contentType = $contentTypeService->loadContentTypeByIdentifier($struct['contentTypeIdentifier']);
+            $contentCreateStruct = $contentService->newContentCreateStruct($contentType, $struct['languageCode']);
 
-        foreach ($struct['fields'] as $field) {
-            $contentCreateStruct->setField($field['identifier'], $field['value']);
+            foreach ($struct['fields'] as $field) {
+                $contentCreateStruct->setField($field['identifier'], $field['value']);
+            }
+
+            $locationCreateStruct = $locationService->newLocationCreateStruct($struct['parentLocationID']);
+            $draft = $contentService->createContent($contentCreateStruct, array($locationCreateStruct));
+            return $contentService->publishVersion($draft->versionInfo);
+        } catch (NotFoundException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (UnauthorizedException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (InvalidArgumentException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (ContentFieldValidationException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (ContentValidationException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (BadStateException $e) {
+            throw new \RuntimeException($e->getMessage());
         }
-
-        $locationCreateStruct = $locationService->newLocationCreateStruct($struct['parentLocationID']);
-        $draft = $contentService->createContent($contentCreateStruct, array($locationCreateStruct));
-        return $contentService->publishVersion($draft->versionInfo);
     }
 
     /**
@@ -71,21 +91,35 @@ class Content
         /** @var ContentService $contentService */
         $contentService = $this->repository->getContentService();
 
-        $fromLocation = $locationService->loadLocation($fromLocationID);
-        $toLocation = $locationService->loadLocation($toLocationID);
+        try {
+            $fromLocation = $locationService->loadLocation($fromLocationID);
+            $toLocation = $locationService->loadLocation($toLocationID);
 
-        $newLocation = $locationService->copySubtree($fromLocation, $toLocation);
+            $newLocation = $locationService->copySubtree($fromLocation, $toLocation);
 
-        if ($name) {
-            $contentInfo = $newLocation->getContentInfo();
-            $contentDraft = $contentService->createContentDraft($contentInfo);
-            $contentUpdateStruct = $contentService->newContentUpdateStruct();
-            $contentUpdateStruct->initialLanguageCode = $contentInfo->mainLanguageCode;
-            $contentUpdateStruct->setField('title', $name);
-            $contentDraft = $contentService->updateContent($contentDraft->versionInfo, $contentUpdateStruct);
-            $contentService->publishVersion($contentDraft->versionInfo);
+            if ($name) {
+                $contentInfo = $newLocation->getContentInfo();
+                $contentDraft = $contentService->createContentDraft($contentInfo);
+                $contentUpdateStruct = $contentService->newContentUpdateStruct();
+                $contentUpdateStruct->initialLanguageCode = $contentInfo->mainLanguageCode;
+                $contentUpdateStruct->setField('title', $name);
+                $contentDraft = $contentService->updateContent($contentDraft->versionInfo, $contentUpdateStruct);
+                $contentService->publishVersion($contentDraft->versionInfo);
+            }
+
+            return $newLocation->getContentInfo()->mainLocationId;
+        } catch (UnauthorizedException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (NotFoundException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (InvalidArgumentException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (BadStateException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (ContentFieldValidationException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (ContentValidationException $e) {
+            throw new \RuntimeException($e->getMessage());
         }
-
-        return $newLocation->getContentInfo()->mainLocationId;
     }
 }
