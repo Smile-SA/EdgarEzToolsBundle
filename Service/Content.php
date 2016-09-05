@@ -12,6 +12,7 @@ use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
+use eZ\Publish\Core\FieldType\Checkbox\Value;
 
 class Content
 {
@@ -103,6 +104,7 @@ class Content
                 $contentUpdateStruct = $contentService->newContentUpdateStruct();
                 $contentUpdateStruct->initialLanguageCode = $contentInfo->mainLanguageCode;
                 $contentUpdateStruct->setField('title', $name);
+                $contentUpdateStruct->setField('activated', new Value(false));
                 $contentDraft = $contentService->updateContent($contentDraft->versionInfo, $contentUpdateStruct);
                 $contentService->publishVersion($contentDraft->versionInfo);
             }
