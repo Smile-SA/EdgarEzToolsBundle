@@ -102,9 +102,22 @@ class Content
                 $contentInfo = $newLocation->getContentInfo();
                 $contentDraft = $contentService->createContentDraft($contentInfo);
                 $contentUpdateStruct = $contentService->newContentUpdateStruct();
+
+                $fields = $contentDraft->fields;
+                foreach ($fields as $key => $field) {
+                    switch ($key) {
+                        case 'title':
+                            $contentUpdateStruct->setField('title', $name);
+                            break;
+                        case 'activated':
+                            $contentUpdateStruct->setField('activated', new Value(false));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
                 $contentUpdateStruct->initialLanguageCode = $contentInfo->mainLanguageCode;
-                $contentUpdateStruct->setField('title', $name);
-                $contentUpdateStruct->setField('activated', new Value(false));
                 $contentDraft = $contentService->updateContent($contentDraft->versionInfo, $contentUpdateStruct);
                 $contentService->publishVersion($contentDraft->versionInfo);
             }
