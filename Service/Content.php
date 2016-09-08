@@ -10,6 +10,7 @@ use eZ\Publish\API\Repository\Exceptions\ContentValidationException;
 use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
+use eZ\Publish\API\Repository\LanguageService;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\Core\FieldType\Checkbox\Value;
@@ -46,8 +47,10 @@ class Content
         $contentTypeService = $this->repository->getContentTypeService();
         /** @var $contentService ContentService */
         $contentService = $this->repository->getContentService();
-        /** @var $locationService LocationService */
+        /** @var LocationService $locationService LocationService */
         $locationService = $this->repository->getLocationService();
+        /** @var LanguageService $languageService */
+        $languageService = $this->repository->getContentLanguageService();
 
         try {
             $contentType = $contentTypeService->loadContentTypeByIdentifier($struct['contentTypeIdentifier']);
@@ -59,7 +62,28 @@ class Content
 
             $locationCreateStruct = $locationService->newLocationCreateStruct($struct['parentLocationID']);
             $draft = $contentService->createContent($contentCreateStruct, array($locationCreateStruct));
-            return $contentService->publishVersion($draft->versionInfo);
+
+            $contentAdded = $contentService->publishVersion($draft->versionInfo);
+
+            $languages = $languageService->loadLanguages();
+            foreach ($languages as $language) {
+                $newLanguageCode = $language->languageCode;
+                if (!$language->enabled || $newLanguageCode == $struct['languageCode']) {
+                    continue;
+                }
+
+                $newVersionInfo = $contentService->createContentDraft($contentAdded->contentInfo)->getVersionInfo();
+
+                $contentUpdateStruct = $contentService->newContentUpdateStruct();
+                foreach ($contentAdded->getFields() as $key => $field) {
+                    $contentUpdateStruct->setField($field->fieldDefIdentifier, $field->value, $newLanguageCode);
+                }
+                $contentUpdateStruct->initialLanguageCode = $newLanguageCode;
+                $contentDraft = $contentService->updateContent($newVersionInfo, $contentUpdateStruct);
+                $contentService->publishVersion($contentDraft->versionInfo);
+            }
+
+            return $contentAdded;
         } catch (NotFoundException $e) {
             throw new \RuntimeException($e->getMessage());
         } catch (UnauthorizedException $e) {
