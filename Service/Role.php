@@ -1,6 +1,6 @@
 <?php
 
-namespace EdgarEz\ToolsBundle\Service;
+namespace Smile\EzToolsBundle\Service;
 
 use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
 use eZ\Publish\API\Repository\Exceptions\LimitationValidationException;

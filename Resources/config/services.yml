@@ -1,30 +1,30 @@
 parameters:
-    edgar_ez_tools.contenttypegroup.service.class: EdgarEz\ToolsBundle\Service\ContentTypeGroup
-    edgar_ez_tools.contenttype.service.class: EdgarEz\ToolsBundle\Service\ContentType
-    edgar_ez_tools.content.service.class: EdgarEz\ToolsBundle\Service\Content
-    edgar_ez_tools.role.service.class: EdgarEz\ToolsBundle\Service\Role
+    smile_ez_tools.contenttypegroup.service.class: Smile\EzToolsBundle\Service\ContentTypeGroup
+    smile_ez_tools.contenttype.service.class: Smile\EzToolsBundle\Service\ContentType
+    smile_ez_tools.content.service.class: Smile\EzToolsBundle\Service\Content
+    smile_ez_tools.role.service.class: Smile\EzToolsBundle\Service\Role
 
 services:
-    edgar_ez_tools.contenttypegroup.service:
-        class: %edgar_ez_tools.contenttypegroup.service.class%
+    smile_ez_tools.contenttypegroup.service:
+        class: %smile_ez_tools.contenttypegroup.service.class%
         arguments: [@ezpublish.api.repository]
         calls:
-            - [setAdminID, [%edgar_ez_tools.adminid%]]
+            - [setAdminID, [%smile_ez_tools.adminid%]]
 
-    edgar_ez_tools.contenttype.service:
-        class: %edgar_ez_tools.contenttype.service.class%
+    smile_ez_tools.contenttype.service:
+        class: %smile_ez_tools.contenttype.service.class%
         arguments: [@ezpublish.api.repository]
         calls:
-            - [setAdminID, [%edgar_ez_tools.adminid%]]
+            - [setAdminID, [%smile_ez_tools.adminid%]]
 
-    edgar_ez_tools.content.service:
-        class: %edgar_ez_tools.content.service.class%
+    smile_ez_tools.content.service:
+        class: %smile_ez_tools.content.service.class%
         arguments: [@ezpublish.api.repository]
         calls:
-            - [setAdminID, [%edgar_ez_tools.adminid%]]
+            - [setAdminID, [%smile_ez_tools.adminid%]]
 
-    edgar_ez_tools.role.service:
-        class: %edgar_ez_tools.role.service.class%
+    smile_ez_tools.role.service:
+        class: %smile_ez_tools.role.service.class%
         arguments: [@ezpublish.api.repository]
         calls:
-            - [setAdminID, [%edgar_ez_tools.adminid%]]
+            - [setAdminID, [%smile_ez_tools.adminid%]]

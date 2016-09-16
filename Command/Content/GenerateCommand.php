@@ -1,15 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: emdro
- * Date: 03/08/2016
- * Time: 08:46
- */
 
-namespace EdgarEz\ToolsBundle\Command\Content;
+namespace Smile\EzToolsBundle\Command\Content;
 
-
-use EdgarEz\ToolsBundle\Service\Content;
+use Smile\EzToolsBundle\Service\Content;
 use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Configuration\ConfigResolver;
 use eZ\Publish\API\Repository\ContentService;
 use eZ\Publish\API\Repository\ContentTypeService;
@@ -38,7 +31,7 @@ class GenerateCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('edgarez:tools:content:generate')
+            ->setName('smile:tools:content:generate')
             ->setDescription('Generate Content');
     }
 
@@ -90,12 +83,12 @@ class GenerateCommand extends ContainerAwareCommand
 
         /** @var $configResolver ConfigResolver */
         $configResolver = $this->getContainer()->get('ezpublish.config.resolver');
-        $adminID = $this->getContainer()->getParameter('edgar_ez_tools.adminid');
+        $adminID = $this->getContainer()->getParameter('smile_ez_tools.adminid');
 
-        $edgarEzContentService = new Content($repository);
-        $edgarEzContentService->setAdminID($adminID);
+        $smileEzContentService = new Content($repository);
+        $smileEzContentService->setAdminID($adminID);
         try {
-            $edgarEzContentService->add($struct);
+            $smileEzContentService->add($struct);
             $output->writeln("<info>Content created</info>");
         } catch (UnauthorizedException $e) {
             $output->writeln("<error>" . $e->getMessage() . "</error>");
@@ -109,7 +102,7 @@ class GenerateCommand extends ContainerAwareCommand
         $question = new Question('Parentlocation ID where your content will be registered: ');
         $question->setValidator(
             array(
-                'EdgarEz\ToolsBundle\Command\Content\Validators',
+                'Smile\EzToolsBundle\Command\Content\Validators',
                 'validateLocationID'
             )
         );
@@ -137,7 +130,7 @@ class GenerateCommand extends ContainerAwareCommand
         $question = new Question('Content type identifier used to create your content: ');
         $question->setValidator(
             array(
-                'EdgarEz\ToolsBundle\Command\Content\Validators',
+                'Smile\EzToolsBundle\Command\Content\Validators',
                 'validateIdentifier'
             )
         );

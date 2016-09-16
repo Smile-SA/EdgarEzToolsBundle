@@ -1,6 +1,6 @@
 <?php
 
-namespace EdgarEz\ToolsBundle\DependencyInjection;
+namespace Smile\EzToolsBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -18,7 +18,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('edgar_ez_tools');
+        $rootNode = $treeBuilder->root('smile_ez_tools');
 
         return $treeBuilder;
     }

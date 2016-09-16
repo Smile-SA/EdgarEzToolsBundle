@@ -1,3 +1,3 @@
-# EdgarEzToolsBundle
+# SmileEzToolsBundle
 
 Still in dev

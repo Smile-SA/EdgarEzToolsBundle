@@ -1,15 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: emdro
- * Date: 03/08/2016
- * Time: 08:46
- */
 
-namespace EdgarEz\ToolsBundle\Command\ContentType;
+namespace Smile\EzToolsBundle\Command\ContentType;
 
-
-use EdgarEz\ToolsBundle\Service\ContentType;
+use Smile\EzToolsBundle\Service\ContentType;
 use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Configuration\ConfigResolver;
 use eZ\Publish\API\Repository\ContentTypeService;
 use eZ\Publish\API\Repository\Exceptions\ForbiddenException;
@@ -38,7 +31,7 @@ class GenerateCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('edgarez:tools:contenttype:generate')
+            ->setName('smile:tools:contenttype:generate')
             ->setDescription('Generate ContentType');
     }
 
@@ -89,7 +82,7 @@ class GenerateCommand extends ContainerAwareCommand
 
         /** @var $configResolver ConfigResolver */
         $configResolver = $this->getContainer()->get('ezpublish.config.resolver');
-        $adminID = $configResolver->getParameter('adminid', 'edgar_ez_tools');
+        $adminID = $configResolver->getParameter('adminid', 'smile_ez_tools');
 
         $contentTypeService = new ContentType($repository);
         $contentTypeService->setAdminID($adminID);
@@ -127,7 +120,7 @@ class GenerateCommand extends ContainerAwareCommand
         $question = new Question('Content type identifier: ');
         $question->setValidator(
             array(
-                'EdgarEz\ToolsBundle\Command\ContentType\Validators',
+                'Smile\EzToolsBundle\Command\ContentType\Validators',
                 'validateContentTypeIdentifier'
             )
         );
@@ -149,7 +142,7 @@ class GenerateCommand extends ContainerAwareCommand
         $question = new Question('Content type name: ');
         $question->setValidator(
             array(
-                'EdgarEz\ToolsBundle\Command\ContentType\Validators',
+                'Smile\EzToolsBundle\Command\ContentType\Validators',
                 'validateContentTypeName'
             )
         );
@@ -197,7 +190,7 @@ class GenerateCommand extends ContainerAwareCommand
         $question = new Question('Content type field identifier, used to define name schema: ');
         $question->setValidator(
             array(
-                'EdgarEz\ToolsBundle\Command\ContentType\Validators',
+                'Smile\EzToolsBundle\Command\ContentType\Validators',
                 'validateFieldIdentifier'
             )
         );
@@ -229,7 +222,7 @@ class GenerateCommand extends ContainerAwareCommand
         $question = new Question('New field identifier: ');
         $question->setValidator(
             array(
-                'EdgarEz\ToolsBundle\Command\ContentType\Validators',
+                'Smile\EzToolsBundle\Command\ContentType\Validators',
                 'validateFieldIdentifier'
             )
         );
@@ -259,7 +252,7 @@ class GenerateCommand extends ContainerAwareCommand
         $question = new Question('Field name: ');
         $question->setValidator(
             array(
-                'EdgarEz\ToolsBundle\Command\ContentType\Validators',
+                'Smile\EzToolsBundle\Command\ContentType\Validators',
                 'validateFieldName'
             )
         );

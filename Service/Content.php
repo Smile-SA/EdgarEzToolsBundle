@@ -1,6 +1,6 @@
 <?php
 
-namespace EdgarEz\ToolsBundle\Service;
+namespace Smile\EzToolsBundle\Service;
 
 use eZ\Publish\API\Repository\ContentService;
 use eZ\Publish\API\Repository\ContentTypeService;

@@ -1,15 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: emdro
- * Date: 03/08/2016
- * Time: 08:46
- */
 
-namespace EdgarEz\ToolsBundle\Command\ContentTypeGroup;
+namespace Smile\EzToolsBundle\Command\ContentTypeGroup;
 
-
-use EdgarEz\ToolsBundle\Service\ContentTypeGroup;
+use Smile\EzToolsBundle\Service\ContentTypeGroup;
 use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Configuration\ConfigResolver;
 use eZ\Publish\API\Repository\Exceptions\ForbiddenException;
 use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
@@ -28,7 +21,7 @@ class GenerateCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('edgarez:tools:contenttypegroup:generate')
+            ->setName('smile:tools:contenttypegroup:generate')
             ->setDescription('Generate ContentTypeGroup');
     }
 
@@ -50,7 +43,7 @@ class GenerateCommand extends ContainerAwareCommand
         $question = new Question('Content type group name: ');
         $question->setValidator(
             array(
-                'EdgarEz\ToolsBundle\Command\ContentTypeGroup\Validators',
+                'Smile\EzToolsBundle\Command\ContentTypeGroup\Validators',
                 'validateContentTypeGroupName'
             )
         );
@@ -66,7 +59,7 @@ class GenerateCommand extends ContainerAwareCommand
 
         /** @var $configResolver ConfigResolver */
         $configResolver = $this->getContainer()->get('ezpublish.config.resolver');
-        $adminID = $configResolver->getParameter('adminid', 'edgar_ez_tools');
+        $adminID = $configResolver->getParameter('adminid', 'smile_ez_tools');
 
         $contentTypeGroupService = new ContentTypeGroup($repository);
         $contentTypeGroupService->setAdminID($adminID);
