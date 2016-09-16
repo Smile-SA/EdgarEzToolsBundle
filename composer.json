@@ -1,19 +1,18 @@
 {
-  "name": "edgarez/toolsbundle",
-  "description": "Tools Bundle",
-  "license": "GPL-2.0",
+  "name": "smile/ez-tools-bundle",
+  "description": "Tools for EZPublish 5.x",
+  "license": ["MIT"],
   "authors": [
     {
-      "name": "Emmanuel Drouet",
-      "homepage": "http://emmanuel-drouet.me"
+      "name": "Smile SA",
+      "homepage": "http://www.smile.fr/"
     }
   ],
-  "minimum-stability": "dev",
   "require": {
-    "php": ">=5.3.3"
+    "php": ">=5.3.0"
   },
   "autoload": {
-    "psr-0": {"EdgarEz\\ToolsBundle": ""}
+    "psr-0": { "Smile\\EzToolsBundle": "" }
   },
-  "target-dir": "EdgarEz/ToolsBundle"
+  "target-dir": "Smile/EzToolsBundle"
 }
